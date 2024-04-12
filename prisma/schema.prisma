@@ -1,0 +1,30 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id         Int      @id @default(autoincrement()) // 主键 自增id
+  title      String
+  content    String?
+  created_at DateTime @default(now()) // 记录默认创建时间
+  todo_list  Todo[] // 一对多关系，一个Category有多个Todo
+}
+
+model Todo {
+  id         Int      @id @default(autoincrement()) // 主键 自增id
+  title      String
+  content    String?
+  note       String?
+  done       Boolean
+  created_at DateTime @default(now()) // 记录默认创建时间
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade) // 显式定义relation，categoryId是外键
+  categoryId Int // 外键，连接到Category表
+}
